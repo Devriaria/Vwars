@@ -26,10 +26,21 @@ def join_game(message):
 
 @bot.message_handler(commands=["fight"])
 def fight(message):
-    lobby = Lobby(message.chat.id)
+    lobby = bot.lobbies[message.chat.id]
     game = lobby.create_game()
     game.run()
 
+
+@bot.message_handler(commands=["test"])
+def test(message):
+    bot.send_message(message.chat.id, "", reply_markup=bot.keyboard())
+
+
+@bot.callback_query_handler(func=lambda call: call)
+def catch_callback(call):
+    x = dir(call)
+    print(x)
+    bot.edit_message_text(call.message.text, call.message.chat.id, call.message.message_id)
 
 
 bot.polling()

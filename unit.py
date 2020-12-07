@@ -1,15 +1,17 @@
 class Unit:
-    def __init__(self, player):
+    def __init__(self, player, game):
         print("created")
         self.hp = 5
         self.name = player.name
         self.attack_value = 2
         self.alive = True
         self.team = None
+        self.player = player
+        self.game = game
 
     def attack(self, targets):
         for target_ in targets:
-            print(f"Игрок {self.name} нанёс {self.attack_value} урона {target_.name}.")
+            self.game.add_string(f"Игрок {self.name} нанёс {self.attack_value} урона {target_.name}.\n")
             target_.take_dmg(self.attack_value)
 
     def take_dmg(self, attack_value):
@@ -19,9 +21,11 @@ class Unit:
 
 
 class Team:
-    def __init__(self, players_list):
+    def __init__(self, players_list, game):
         self.units_list = []
+        self.game = game
         for player in players_list:
-            unit = Unit(player)
+            unit = Unit(player, game)
             unit.team = self
+            self.units_list.append(unit)
         self.team_name = players_list[0].name

@@ -7,12 +7,22 @@ class Game:
     def __init__(self, lobby_teams, chat_id):
         self.teams = []
         self.chat_id = chat_id
+        self.round_string = ""
+        self.round_count = 0
         for team in lobby_teams:
-            self.teams.append(Team(team))
+            self.teams.append(Team(team, self))
+
+    def add_string(self, string):
+        self.round_string += string
+
+    def send_string(self):
+        AssgardBot().send_message(self.chat_id, self.round_string)
+        self.round_string = ""
 
     def run(self):
         self.wait_players_turn()
         self.make_turn()
+        self.players_alive()
         self.remove_dead()
         if self.check_end():
             self.end()
@@ -23,6 +33,8 @@ class Game:
         pass
 
     def make_turn(self):
+        self.round_count +=1
+        self.add_string(f"Раунд {self.round_count}\n\n")
         for team_ in self.teams:
             for player in team_.units_list:
                 if player in self.teams[0].units_list:
@@ -32,19 +44,28 @@ class Game:
                 else:
                     player.attack(self.teams[0].units_list)
 
+    def players_alive(self):
+        for team_ in self.teams:
+            for player in team_.units_list:
+                self.add_string(f"У игрока {player.name} осталось {player.hp} жизней.\n")
+
     def remove_dead(self):
         for team_ in self.teams:
             for player in team_.units_list:
-                AssgardBot().send_message(self.chat_id, f"У игрока {player.name} осталось {player.hp} жизней.")
                 if not player.alive:
                     player.team.units_list.remove(player)
-                    AssgardBot().send_message(self.chat_id, f"Игрок {player.name} умер.")
+                    self.add_string(f"Игрок {player.name} умер.\n")
 
     def check_end(self):
-        for team_ in self.teams:
-            if not team_.units_list:
-                AssgardBot().send_message(self.chat_id, f"Команда {team_.team_name} проиграла.")
-                return True
+        self.send_string()
+        if not any(team_.units_list for team_ in self.teams):
+            AssgardBot().send_message(self.chat_id, "Обе команды проиграли.")
+            return True
+        else:
+            for team_ in self.teams:
+                if not team_.units_list:
+                    AssgardBot().send_message(self.chat_id, f"Команда {team_.team_name} проиграла.")
+                    return True
         return False
 
     def end(self):
