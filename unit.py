@@ -1,9 +1,12 @@
+from weapon import weapon
+
+
 class Unit:
     def __init__(self, player, game):
         print("created")
         self.hp = 5
         self.name = player.name
-        self.attack_value = 2
+        self.attack_value = weapon.attack_value
         self.alive = True
         self.team = None
         self.player = player
@@ -11,7 +14,7 @@ class Unit:
 
     def attack(self, targets):
         for target_ in targets:
-            self.game.add_string(f"Игрок {self.name} нанёс {self.attack_value} урона {target_.name}.\n")
+            self.game.add_string(f"{self.name} нанёс {self.attack_value} урона {target_.name} {weapon.name_text}.\n")
             target_.take_dmg(self.attack_value)
 
     def take_dmg(self, attack_value):

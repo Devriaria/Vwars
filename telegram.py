@@ -7,7 +7,7 @@ bot = AssgardBot()
 
 @bot.message_handler(commands=["help"])
 def help(message):
-    bot.send_message(message.from_user.id, "hello")
+    bot.send_message(message.from_user.id, "There's no help for you.")
 
 
 @bot.message_handler(commands=["start_game"])

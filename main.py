@@ -1,6 +1,7 @@
 import random
 from unit import Unit, Team
 from bot import AssgardBot
+from weapon import weapon
 
 
 class Game:
@@ -30,10 +31,14 @@ class Game:
             self.run()
 
     def wait_players_turn(self):
-        pass
+        if self.round_count == 0:
+            print("Оружие выбрано:")
+            for team_ in self.teams:
+                for player in team_.units_list:
+                    print(f"Оружие {player.name} - {weapon.name}")
 
     def make_turn(self):
-        self.round_count +=1
+        self.round_count += 1
         self.add_string(f"Раунд {self.round_count}\n\n")
         for team_ in self.teams:
             for player in team_.units_list:
@@ -47,14 +52,14 @@ class Game:
     def players_alive(self):
         for team_ in self.teams:
             for player in team_.units_list:
-                self.add_string(f"У игрока {player.name} осталось {player.hp} жизней.\n")
+                self.add_string(f"У {player.name} осталось {player.hp} жизней.\n")
 
     def remove_dead(self):
         for team_ in self.teams:
             for player in team_.units_list:
                 if not player.alive:
                     player.team.units_list.remove(player)
-                    self.add_string(f"Игрок {player.name} умер.\n")
+                    self.add_string(f"{player.name} умер.\n")
 
     def check_end(self):
         self.send_string()
