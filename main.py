@@ -32,10 +32,10 @@ class Game:
 
     def wait_players_turn(self):
         if self.round_count == 0:
-            print("Оружие выбрано:")
+            self.add_string("Оружие выбрано:\n")
             for team_ in self.teams:
                 for player in team_.units_list:
-                    print(f"Оружие {player.name} - {weapon.name}")
+                    self.add_string(f"Оружие {player.name} - {weapon.name}\n")
 
     def make_turn(self):
         self.round_count += 1
